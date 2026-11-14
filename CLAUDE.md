@@ -38,12 +38,37 @@ Hønsefuglportalen (NINA) og habitatlag.
   - Skog uten treslag/bonitet (ca. 1 070 km²) antas å være fjellskog, w = 0,8 (antakelse, flagget).
 - H = K × T × S × M ∈ [0, 1]. K regnes over kartlagt del av cellen; H = NaN ved > 50 % ikke kartlagt
   eller uten DTM. Lokal tregrense (`rypekart.tregrense`) = P95 av høyden i skogceller per 5×5 km-blokk.
-  H2/H3 ligger over forventet nivå (median ca. 710/670 moh) – flagget, ikke korrigert.
+- **Tregrensen er kontrollert (2026-11-14):** dagens metode (a) ble sammenlignet med (b) uten «skog uten
+  treslag» og (c) P90, og brukeren valgte (a). «Skog uten treslag» ligger i samme høyde som lauvskog med
+  lav bonitet, så den hører til skogen som danner tregrensa. H2/H3 har median ca. 710/670 moh (over
+  forventet 400–650), men nivået antas å være reelt for innlandet. Varianten påvirker H̄ med maks ±0,02.
 - Kalibrering: k = tetthet / H̄ per område/år/mål; celletetthet = k × H bare innenfor unionen.
   Det arealvektede snittet gjenskaper NINA eksakt (testet). Vektene endrer fordelingen, ikke totalen.
 - Følsomhet: 200 Monte Carlo-trekk med fast frø. CV_total = √(CV_NINA² + CV_fordeling²) er en tilnærming.
 - Rekkefølge: omrader → ar50 → dtm → rutenett → tregrense → habitat → kalibrering → folsomhet → qa_habitat
-  (`qa` er QA-steget fra prompt 1). Tester: `uv run pytest`.
+  → eksport (`qa` er QA-steget fra prompt 1). Tester: `uv run pytest`.
+- Fase 2: rådata fra linjetakseringene på Statskogs grunn finnes åpent på GBIF (Nilsen, Vang &
+  Breisjøberget 2022, <https://doi.org/10.15468/q2ehlk>, CC BY 4.0).
+
+## Webkart (prompt 3)
+- `rypekart.eksport` skriver `web/data/`: `celler.geojson` (celler med andel > 0, EPSG:4326, 5 desimaler),
+  `habitatgrupper.json`, `kalibrering.json`, `omrader.geojson` (`lag` = union/polygon),
+  `habitat_H?.png` (H warpet til EPSG:3857, YlGnBu) og `habitat_bounds.json`.
+- `klasse` i `celler.geojson` er en kortkode på to bokstaver (`eksport.KORTKODER`), og navnet slås opp i
+  `habitatgrupper.json`. Det holder filen under 5 MB (4,8 MB; ca. 0,5 MB komprimert). Valgt av bruker 2026-11-14.
+- CV for voksne finnes ikke i CSV-en og regnes som (pluss_se − minus_se) / 2 / estimat. For total stemmer
+  denne formelen med NINAs `tetthet_cv`.
+- `web/` er statisk HTML/CSS/JS (ES-moduler) uten byggesteg. Leaflet 1.9.4 og Chart.js 4.4.1 lastes fra
+  cdnjs med SRI-hash. Tettheten k × H regnes i nettleseren, med faste fargeklasser per mål fra
+  99-persentilen over alle år.
+- Bakgrunnskart: Kartverkets cache, `https://cache.kartverket.no/v1/wmts/1.0.0/{topograatone|topo}/default/webmercator/{z}/{y}/{x}.png`
+  (bekreftet i WMTSCapabilities). Attribusjon «© Kartverket». Flisene lastes ikke ned eller caches lokalt.
+- Cellene tegnes på canvas med `smoothFactor: 0`, ellers forsvinner 250 m-celler ved lav zoom.
+  Områdeomrissene tegnes med SVG, fordi et canvas-polygon fanger klikk i hele innsiden og blokkerer cellene.
+- Publiseres som statisk side på Cloudflare Pages med output-mappe `web` og uten byggkommando. Brukeren
+  kobler opp Cloudflare selv.
+- Lisenser: koden er MIT (`LICENSE`). AR50 er NLOD 1.0 (Geonorge-metadata). DTM og bakgrunnskart er
+  CC BY 4.0. For NINA-estimatene er det ikke oppgitt lisens, så de gjengis med kildehenvisning.
 
 ## Konvensjoner
 - Python via `uv`. Kjør alt med `uv run`.
@@ -56,8 +81,9 @@ Hønsefuglportalen (NINA) og habitatlag.
 - Prosjektet ligger i `C:\Users\andreas.kristiansen\dev\rypekart`, utenfor OneDrive (flyttet 2026-11-14,
   fordi synkroniseringen låste `.venv` og lastet opp GeoPackage-filen ved hver kjøring). Koden sikres med git.
   Ikke legg prosjektet, `.venv` eller `data/` i OneDrive igjen.
-- Data og outputs committes ikke (`.gitignore`). Unntak: de håndlagde inndatafilene i `data/raw`
-  (`helgeland_lirype_estimater.csv`, `helgeland_takseringsomrader.geojson`, `build_helgeland.py`),
-  som ikke kan lastes ned på nytt.
+- Data og outputs committes ikke (`.gitignore`, mønstrene er ankret til roten: `/data/*`, `/outputs/`).
+  Unntak: de håndlagde inndatafilene i `data/raw` (`helgeland_lirype_estimater.csv`,
+  `helgeland_takseringsomrader.geojson`, `build_helgeland.py`), som ikke kan lastes ned på nytt.
+  `web/data/` committes, fordi Cloudflare Pages publiserer den.
 - Norske navn på kolonner og lag; kode og kommentarer kan være på engelsk.
 - Vis en plan før større endringer, og stopp og rapporter hvis en datakilde feiler – ikke lag mock-data uten å si fra.

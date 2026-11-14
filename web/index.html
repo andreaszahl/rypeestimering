@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rypekart Helgeland</title>
+  <meta name="description" content="Tetthetskart for lirype i Statskogs takseringsområder Helgeland 1–3, kalibrert mot NINAs estimater.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+        integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"
+          integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"
+          integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="topp">
+    <h1>Rypekart Helgeland <span class="undertittel">lirype, august</span></h1>
+    <form class="kontroller" id="kontroller" aria-label="Kartvalg">
+      <div class="kontroll kontroll-aar">
+        <label for="aar">År <output id="aar-verdi" for="aar">2026</output></label>
+        <input type="range" id="aar" min="2013" max="2026" step="1" value="2026">
+      </div>
+      <fieldset class="kontroll segment">
+        <legend>Mål</legend>
+        <label><input type="radio" name="maal" value="total" checked><span>Total</span></label>
+        <label><input type="radio" name="maal" value="voksne"><span>Voksne</span></label>
+      </fieldset>
+      <fieldset class="kontroll segment">
+        <legend>Kartlag</legend>
+        <label><input type="radio" name="lag" value="tetthet" checked><span>Tetthet</span></label>
+        <label><input type="radio" name="lag" value="habitat"><span>Habitat</span></label>
+        <label><input type="radio" name="lag" value="usikkerhet"><span>Usikkerhet</span></label>
+      </fieldset>
+    </form>
+    <button type="button" class="knapp-om" id="vis-om">Om kartet</button>
+  </header>
+
+  <main class="hoved">
+    <div id="kart" class="kart" role="region" aria-label="Kart"></div>
+
+    <aside class="panel" id="panel" aria-label="Områdeinformasjon">
+      <button type="button" class="panel-handtak" id="panel-handtak" aria-expanded="true"
+              aria-controls="panel-innhold">Områder</button>
+      <div class="panel-innhold" id="panel-innhold">
+        <nav class="omradeliste" aria-label="Velg område">
+          <button type="button" data-omrade="1">Helgeland 1</button>
+          <button type="button" data-omrade="2">Helgeland 2</button>
+          <button type="button" data-omrade="3">Helgeland 3</button>
+        </nav>
+        <section id="omradeinfo" class="omradeinfo" aria-live="polite">
+          <p class="hint">Velg et område i lista eller klikk på et takseringsområde i kartet.
+            Klikk på en celle for detaljer.</p>
+        </section>
+      </div>
+    </aside>
+  </main>
+
+  <dialog id="om" class="om" aria-labelledby="om-tittel">
+    <form method="dialog"><button class="lukk" aria-label="Lukk">×</button></form>
+    <h2 id="om-tittel">Om kartet</h2>
+    <p>Kartet viser beregnet tetthet av lirype (fugl per km²) i Statskogs takseringsområder
+      Helgeland 1, 2 og 3 for årene 2013–2026, fordelt på ruteceller på 250 × 250 m.</p>
+    <h3>Metode i korte trekk</h3>
+    <ul>
+      <li><strong>Kalibrering:</strong> Utgangspunktet er NINAs publiserte tetthetsestimat per område og år
+        fra linjetakseringene. Tettheten fordeles på cellene etter en habitatindeks, slik at det arealvektede
+        snittet innenfor takseringsområdet er nøyaktig lik NINAs estimat.</li>
+      <li><strong>Habitatindeks</strong> H = K × T × S × M (0–1): K er vektet arealtype fra AR50, T avstand til lokal
+        tregrense, S helning og M mosaikk av skog, snaumark og myr.</li>
+      <li><strong>Totalen påvirkes ikke av vektene:</strong> Antall fugl i et område er NINAs tetthet × areal.
+        Habitatvektene bestemmer bare hvordan fuglene fordeles innenfor området.</li>
+      <li><strong>Usikkerhet:</strong> CV_total = √(CV<sub>NINA</sub>² + CV<sub>fordeling</sub>²), der CV<sub>fordeling</sub>
+        kommer fra 200 Monte Carlo-trekk av vektene og parameterne.</li>
+    </ul>
+    <h3>Begrensninger</h3>
+    <ul>
+      <li>Habitatvektene er faglige antakelser, ikke tilpasset statistisk (bare tre områder).</li>
+      <li>AR50 er laget for oversikt, ikke for presis arealanalyse (minste kartleggingsenhet 1,5 hektar).</li>
+      <li>Tetthet vises bare innenfor takseringsområdene. Utenfor vises bare habitatindeksen.</li>
+      <li>Dette er fase 1. Rådata fra takseringene er ikke brukt ennå.</li>
+      <li>Takseringsområdene ligger i bedre habitat enn omgivelsene (H̄ innenfor/utenfor 1,4–1,7), så tettheten
+        kan ikke uten videre overføres til områdene rundt.</li>
+    </ul>
+    <h3>Kilder</h3>
+    <ul>
+      <li>Tetthetsestimater og områdeavgrensninger: Hønsefuglportalen, Norsk institutt for naturforskning (NINA),
+        <a href="https://honsefugl.nina.no/Innsyn/" target="_blank" rel="noopener">honsefugl.nina.no</a>.
+        Takseringene er gjort på Statskogs grunn.</li>
+      <li>Arealressurskart AR50 © NIBIO (NLOD 1.0).</li>
+      <li>Terrengmodell og bakgrunnskart © Kartverket (CC BY 4.0).</li>
+    </ul>
+    <p class="liten">Kursprosjekt i <em>Geografisk IT og kunstig intelligens</em>, Universitetet i Agder.
+      Kildekode: <a href="https://github.com/andreaszahl/rypeestimering" target="_blank" rel="noopener">GitHub</a>.</p>
+  </dialog>
+</body>
+</html>

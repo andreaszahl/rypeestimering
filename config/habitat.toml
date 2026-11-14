@@ -136,6 +136,12 @@ maks_ikke_kartlagt = 0.5
 
 [tregrense]
 # Lokal tregrense = høy persentil av middelhøyden i skogceller innenfor blokker på 5×5 km.
+# Kontrollert 2026-11-14 mot (b) uten «skog uten treslag» i skogcellene og (c) P90. Brukeren valgte å
+# beholde (a): «skog uten treslag» ligger i samme høyde som lauvskog med lav bonitet (median
+# 481/602/547 mot 490/596/524 moh), så å fjerne den ville fjerne skogen som danner tregrensa.
+# Median tregrense ca. 520/710/670 moh. H2/H3 er over forventet 400–650, men lauvskog med registrert
+# treslag når også 717 moh i H2, så nivået antas å være reelt (innland mot svenskegrensen).
+# Varianten påvirker H̄ med maks ±0,02.
 blokk_celler = 20        # 20 × 250 m = 5 km
 skogandel_min = 0.5      # celle regnes som skogcelle ved samlet skogandel ≥ 0,5
 min_skogceller = 20      # færre skogceller i en blokk gir ikke et pålitelig estimat
