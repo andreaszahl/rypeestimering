@@ -5,7 +5,7 @@ Helgeland 1, 2 og 3 for årene 2013–2026, fordelt på ruteceller på 250 × 25
 NINAs publiserte estimater fra linjetakseringene og fordeles innenfor hvert område etter en
 habitatindeks laget fra arealressurskart og terreng. Utenfor takseringsområdene vises bare habitatindeksen.
 
-**Kartet:** _[lenke til Cloudflare Pages kommer her]_
+**Kartet:** <https://andreaszahl.github.io/rypeestimering/>
 
 ## Metode i korte trekk
 
@@ -78,13 +78,16 @@ Lokal visning av webkartet på <http://localhost:8000>:
 uv run python -m http.server -d web
 ```
 
-## Publisering på Cloudflare Pages
+## Publisering på GitHub Pages
 
-Webkartet er en statisk side uten byggesteg. I Cloudflare Pages:
+Webkartet er en statisk side uten byggesteg. Workflowen
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) publiserer mappen `web/` til GitHub Pages.
 
-1. Opprett et prosjekt med *Connect to Git* og velg GitHub-repoet.
-2. *Framework preset*: None. *Build command*: tom. *Build output directory*: `web`.
-3. Hver push til `main` publiserer siden på nytt.
+1. Velg *Settings → Pages → Build and deployment → Source: GitHub Actions* i repoet. Dette gjøres én gang.
+2. Hver push til `main` som endrer `web/`, publiserer siden på nytt. Workflowen kan også startes for hånd
+   under *Actions → Publiser webkart → Run workflow*.
+
+Husk å kjøre `uv run python -m rypekart.eksport` og committe `web/data/` når modellen er endret.
 
 ## Datakilder
 

@@ -65,8 +65,10 @@ Hønsefuglportalen (NINA) og habitatlag.
   (bekreftet i WMTSCapabilities). Attribusjon «© Kartverket». Flisene lastes ikke ned eller caches lokalt.
 - Cellene tegnes på canvas med `smoothFactor: 0`, ellers forsvinner 250 m-celler ved lav zoom.
   Områdeomrissene tegnes med SVG, fordi et canvas-polygon fanger klikk i hele innsiden og blokkerer cellene.
-- Publiseres som statisk side på Cloudflare Pages med output-mappe `web` og uten byggkommando. Brukeren
-  kobler opp Cloudflare selv.
+- Publiseres på GitHub Pages (<https://andreaszahl.github.io/rypeestimering/>) via
+  `.github/workflows/pages.yml`, som laster opp `web/` ved push til `main`. Valgt 2026-11-14 i stedet for
+  Cloudflare Pages, som prompt 3 nevner. Pages-kilden må være «GitHub Actions», fordi «Deploy from a branch»
+  bare støtter roten og `/docs`.
 - Lisenser: koden er MIT (`LICENSE`). AR50 er NLOD 1.0 (Geonorge-metadata). DTM og bakgrunnskart er
   CC BY 4.0. For NINA-estimatene er det ikke oppgitt lisens, så de gjengis med kildehenvisning.
 
@@ -84,6 +86,6 @@ Hønsefuglportalen (NINA) og habitatlag.
 - Data og outputs committes ikke (`.gitignore`, mønstrene er ankret til roten: `/data/*`, `/outputs/`).
   Unntak: de håndlagde inndatafilene i `data/raw` (`helgeland_lirype_estimater.csv`,
   `helgeland_takseringsomrader.geojson`, `build_helgeland.py`), som ikke kan lastes ned på nytt.
-  `web/data/` committes, fordi Cloudflare Pages publiserer den.
+  `web/data/` committes, fordi GitHub Pages publiserer den.
 - Norske navn på kolonner og lag; kode og kommentarer kan være på engelsk.
 - Vis en plan før større endringer, og stopp og rapporter hvis en datakilde feiler – ikke lag mock-data uten å si fra.
