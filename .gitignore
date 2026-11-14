@@ -1,0 +1,16 @@
+# Data og resultater committes ikke – unntatt de håndlagde inndatafilene i data/raw,
+# som ikke kan lastes ned på nytt.
+data/*
+!data/raw/
+data/raw/*
+!data/raw/helgeland_lirype_estimater.csv
+!data/raw/helgeland_takseringsomrader.geojson
+!data/raw/build_helgeland.py
+outputs/
+
+# Python / uv
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/

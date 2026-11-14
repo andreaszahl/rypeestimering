@@ -1,0 +1,174 @@
+# Habitatparametere for lirype i august – fase 1.
+#
+# Med bare tre takseringsområder kan vektene ikke tilpasses statistisk. Alle verdier her er faglige
+# antakelser. De bestemmer bare hvordan fuglene FORDELES innenfor et område; totalt antall fugl i et
+# takseringsområde (NINAs tetthet × areal) påvirkes ikke. Følsomheten testes i [folsomhet].
+#
+# Klassene i `klasser` er AR50-klassene i laget `rutenett` (kolonnene andel_<klasse>).
+# Hver klasse skal høre til nøyaktig én gruppe eller stå i [ekskludert]. Koden stopper ellers.
+# `mosaikk` angir hvilken av de tre mosaikkgruppene (skog, snaumark, myr) gruppen teller i.
+# Gruppene med mosaikk = "skog" definerer også skogandelen i tregrense-steget.
+#
+# AR50-koder (SOSI-produktspesifikasjon AR50 v20220523):
+#   skogbonitet 11 impediment, 12 lav, 13 middels, 18 høy og særs høy, 99 ikke registrert
+#   vegetasjonsdekke 51 impediment (ikke vegetasjonsdekt), 52 skrint usammenhengende, 53 lavdekke,
+#                    54 skrint til godt, 55 frodig usammenhengende, 99 ikke registrert
+
+[grupper.lauvskog_lav]
+navn = "Lauvskog, lav bonitet"
+# Fjellbjørkeskog (impediment + lav bonitet) er kjernehabitat for lirype i august: skjul,
+# bjørk/vier som beite og kyllingrikt feltsjikt. Lauvskog med kjent treslag men uregistrert bonitet
+# (1,5 km²) legges hit etter avklaring 2026-11-03.
+w = 1.0
+klasser = ["skog_lauv_lav", "skog_lauv_uten_bonitet"]
+mosaikk = "skog"
+
+[grupper.lauvskog_middels_hoy]
+navn = "Lauvskog, middels/høy bonitet"
+# Frodigere lavlands-lauvskog: brukes, men tettere og lenger fra fjellet enn kjernehabitatet.
+w = 0.6
+klasser = ["skog_lauv_middels_hoy"]
+mosaikk = "skog"
+
+[grupper.skog_uten_treslag]
+navn = "Skog uten treslag/bonitet"
+# ANTAKELSE: 1 072 km² skog i AR50 mangler både treslag og bonitet. Ut fra beliggenheten (fjellsider
+# over kartlagt produktiv skog) antas den å være overveiende fjellbjørkeskog, men det er ikke
+# verifisert. Vekten er satt litt under kjernehabitatet for å gjenspeile usikkerheten.
+w = 0.8
+klasser = ["skog_uten_treslag"]
+mosaikk = "skog"
+antakelse = true
+
+[grupper.blandingsskog]
+navn = "Blandingsskog"
+# Innslag av bjørk gir noe habitat, men barskogandelen reduserer verdien. Alle boniteter.
+w = 0.4
+klasser = ["skog_bland"]
+mosaikk = "skog"
+
+[grupper.barskog_lav]
+navn = "Barskog, lav bonitet"
+# Glissen fjellnær furu-/granskog brukes i kanten mot bjørkebeltet. Barskog med kjent treslag men
+# uregistrert bonitet (1,1 km²) legges hit etter avklaring 2026-11-03.
+w = 0.3
+klasser = ["skog_bar_lav", "skog_bar_uten_bonitet"]
+mosaikk = "skog"
+
+[grupper.barskog_middels_hoy]
+navn = "Barskog, middels/høy bonitet"
+# Tett produktiv barskog er i hovedsak storfuglhabitat og lite brukt av lirype.
+w = 0.15
+klasser = ["skog_bar_middels_hoy"]
+mosaikk = "skog"
+
+[grupper.snaumark_frisk]
+navn = "Snaumark, frisk vegetasjon"
+# Frodig vegetasjon over skoggrensa: vierkratt og lynghei med god insekt- og beitetilgang.
+w = 0.9
+klasser = ["snaumark_frodig_usammenhengende"]
+mosaikk = "snaumark"
+
+[grupper.snaumark_skrinn_til_god]
+navn = "Snaumark, skrinn til god vegetasjon"
+# ANTAKELSE: vegetasjonsdekke 54 «skrint til godt» er en mellomklasse som dekker 34–47 % av
+# takseringsarealet. Den har fått en egen gruppe midt mellom frisk (0,9) og skrinn (0,6) etter
+# avklaring 2026-11-03.
+w = 0.75
+klasser = ["snaumark_skrint_til_godt"]
+mosaikk = "snaumark"
+antakelse = true
+
+[grupper.snaumark_skrinn]
+navn = "Snaumark, skrinn vegetasjon"
+# Rabber, lav- og grasheier med lite skjul. Lavdekke (53, finnes ikke i dataene) og snaumark med
+# uregistrert vegetasjonsdekke (14 km², avklart 2026-11-03) legges hit.
+w = 0.6
+klasser = ["snaumark_skrint_usammenhengende", "snaumark_lavdekke", "snaumark_ikke_registrert"]
+mosaikk = "snaumark"
+
+[grupper.bart_fjell]
+navn = "Bart fjell / blokkmark"
+# Ikke vegetasjonsdekt mark. Nesten uten verdi for lirype i august. Teller ikke i mosaikken.
+w = 0.05
+klasser = ["bart_fjell"]
+
+[grupper.sno_isbre]
+navn = "Snø/isbre"
+w = 0.0
+klasser = ["sno_isbre"]
+
+[grupper.myr_apen]
+navn = "Åpen myr"
+# Myrer og myrkanter er viktige kyllingområder (insekter, multe, vier i kantene).
+w = 0.7
+klasser = ["myr_apen"]
+mosaikk = "myr"
+
+[grupper.myr_med_skog]
+navn = "Myr med skog"
+# Tresatt myr (AR50 myr med treslag). Samme verdi som åpen myr.
+w = 0.7
+klasser = ["myr_med_skog"]
+mosaikk = "myr"
+
+[grupper.vann]
+navn = "Ferskvann / hav"
+w = 0.0
+klasser = ["ferskvann", "hav"]
+
+[grupper.jordbruk]
+navn = "Jordbruk"
+# Innmark i dalbunnen. Brukes sporadisk i kantsoner.
+w = 0.2
+klasser = ["jordbruk"]
+
+[grupper.bebygd]
+navn = "Bebygd / samferdsel"
+w = 0.0
+klasser = ["bebygd"]
+
+[ekskludert]
+# «Ikke kartlagt» i AR50 er svensk side av grensen. Den delen tas ut av K (K regnes over den
+# kartlagte delen av cellen), og celler med mer enn maks_ikke_kartlagt får H = NaN.
+klasser = ["ikke_kartlagt"]
+maks_ikke_kartlagt = 0.5
+
+[tregrense]
+# Lokal tregrense = høy persentil av middelhøyden i skogceller innenfor blokker på 5×5 km.
+blokk_celler = 20        # 20 × 250 m = 5 km
+skogandel_min = 0.5      # celle regnes som skogcelle ved samlet skogandel ≥ 0,5
+min_skogceller = 20      # færre skogceller i en blokk gir ikke et pålitelig estimat
+persentil = 95           # øvre del av skogens høydefordeling ≈ der skogen slutter
+glatting = 1             # antall 3×3-glidende snitt over blokkrutenettet etter utfylling
+min_moh = 250            # nedre grense: under dette er tregrense urealistisk på Helgeland
+maks_moh = 900           # øvre grense: over dette er tregrense urealistisk på Helgeland
+
+[tregrensefaktor]
+# T = t_min + (1 − t_min) · exp(−½ · ((rel − mu) / sigma)²), rel = høyde − tregrense
+mu = 50.0      # tettheten topper seg like over tregrensa (bjørkebeltet går over i vier/lynghei)
+sigma = 150.0  # bredden på høydebeltet med godt habitat
+t_min = 0.15   # gulv: rype finnes også lavt og høyt, bare sjeldnere
+
+[helning]
+# S = 1 opp til full_til, synker lineært til s_min ved min_ved, og er s_min over det.
+full_til = 25.0  # grader; moderate lier er fullverdig habitat
+min_ved = 45.0   # grader; svært bratt og ur-preget terreng
+s_min = 0.3
+
+[mosaikk]
+# M = (1 + beta · Shannon_norm) / (1 + beta), Shannon over andelene av skog, snaumark og myr.
+# En blanding av skog, snaumark og myr gir kanter og variasjon som rypekull bruker. Effekten er liten.
+beta = 0.2
+
+[kalibrering]
+kartaar = 2026  # året som skrives ut som lag tetthet_<år> og brukes i følsomhetsanalysen
+
+[folsomhet]
+trekk = 200
+seed = 20261103
+vekt_lognormal_sd = 0.3     # hver gruppevekt × lognormal(0, 0,3), klippet til [0, 1]
+mu = [-50.0, 150.0]         # U(min, maks), meter
+sigma = [100.0, 250.0]      # U(min, maks), meter
+beta = [0.0, 0.4]           # U(min, maks)
+helning_delta = 5.0         # hver av helningsgrensene forskyves med U(−5, +5) grader
